@@ -1,0 +1,38 @@
+body {
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    color: yellowgreen;
+}
+
+.border_class {
+    border: 5px solid black;
+    border-radius: 10px;
+}
+
+p {
+    margin: 15px;
+}
+
+.font_class {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.hide_element {
+    display: none;
+}
+
+td {
+    border: 2px solid green;
+}
+
+tr {
+    outline: 2px dotted red;
+}
