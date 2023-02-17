@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="quiz_style.css">
+    <title>Quiz</title>
+</head>
+<body>
+
+    <h1>Quiz</h1>
+    <div id="form">
+        <p>Seleziona il livello di gioco:</p>
+        <input type="radio" id="easy_radio" name="selected_level" value="easy">
+        <label for="easy_radio">Easy</label>
+        <input type="radio" id="difficult_radio" name="selected_level" value="difficult">
+        <label for="difficult_radio">Difficult</label>
+        <input type="radio" id="both_radio" name="selected_level" value="both">
+        <label for="both_radio">Both</label>
+        <br>
+        <button id="play_button">Play</button>
+    </div>
+
+
+    <script>
+        const questions = [
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'difficult',
+            question: 'What does CPU stand for?',
+            correct_answer: 'Central Processing Unit',
+            incorrect_answers: [
+              'Central Process Unit',
+              'Computer Personal Unit',
+              'Central Processor Unit',
+            ],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'easy',
+            question:
+              'In the programming language Java, which of these keywords would you put on a variable to make sure it doesn&#039;t get modified?',
+            correct_answer: 'Final',
+            incorrect_answers: ['Static', 'Private', 'Public'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'boolean',
+            difficulty: 'easy',
+            question: 'The logo for Snapchat is a Bell.',
+            correct_answer: 'False',
+            incorrect_answers: ['True'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'boolean',
+            difficulty: 'easy',
+            question:
+              'Pointers were not used in the original C programming language; they were added later on in C++.',
+            correct_answer: 'False',
+            incorrect_answers: ['True'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'difficult',
+            question:
+              'What is the most preferred image format used for logos in the Wikimedia database?',
+            correct_answer: '.svg',
+            incorrect_answers: ['.png', '.jpeg', '.gif'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'difficult',
+            question: 'In web design, what does CSS stand for?',
+            correct_answer: 'Cascading Style Sheet',
+            incorrect_answers: [
+              'Counter Strike: Source',
+              'Corrective Style Sheet',
+              'Computer Style Sheet',
+            ],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'difficult',
+            question:
+              'What is the code name for the mobile operating system Android 7.0?',
+            correct_answer: 'Nougat',
+            incorrect_answers: [
+              'Ice Cream Sandwich',
+              'Jelly Bean',
+              'Marshmallow',
+            ],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'easy',
+            question: 'On Twitter, what is the character limit for a Tweet?',
+            correct_answer: '140',
+            incorrect_answers: ['120', '160', '100'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'boolean',
+            difficulty: 'easy',
+            question: 'Linux was first created as an alternative to Windows XP.',
+            correct_answer: 'False',
+            incorrect_answers: ['True'],
+          },
+          {
+            category: 'Science: Computers',
+            type: 'multiple',
+            difficulty: 'difficult',
+            question:
+              'Which programming language shares its name with an island in Indonesia?',
+            correct_answer: 'Java',
+            incorrect_answers: ['Python', 'C', 'Jakarta'],
+          },
+        ];
+
+        let level;
+        let questionsArr = [];
+        let questionIndex = 0;
+        let points = 0;
+
+        window.onload = function() {
+
+          let playButton = document.getElementById("play_button");
+          playButton.addEventListener("click", selectLevel);
+
+          function selectLevel() {
+            let form = document.getElementById("form");
+            let radioButtons = form.getElementsByTagName("input");
+            for(let radioBtn of radioButtons) {
+              if (radioBtn.checked) {
+                level = radioBtn.value;
+                break;
+              }
+            }
+            if (level !== undefined) {
+              deleteForm();
+              calcQuestions();
+            } else {
+              alert("Devi selezionare il livello di difficoltà!!!");
+            }
+            if (questionsArr.length > 0) {
+              //visualizza la domanda corrente
+              displayQuestion(questionsArr[questionIndex], questionIndex);
+            }
+          }
+
+          function deleteForm() {
+            let body = document.getElementsByTagName("body")[0];
+            let form = document.getElementById("form");
+            body.removeChild(form);
+          }
+
+          function calcQuestions() {
+            for(let question of questions) {
+              if (level !== "both") {
+                if (question.difficulty === level) {
+                  questionsArr.push(question);
+                }
+              } else {
+                questionsArr.push(question);
+              }
+            }
+          }
+
+
+          function displayQuestion(question, index) {
+            let body = document.getElementsByTagName("body")[0];
+            let div = document.createElement("div");
+            div.setAttribute("id", "question_div");
+            let p1 = document.createElement("p");
+            p1.innerText = "category: " + question.category;
+            div.appendChild(p1);
+            let p2 = document.createElement("p");
+            p2.innerText = "type: " + question.type;
+            div.appendChild(p2);
+            let p3 = document.createElement("p");
+            p3.innerText = "difficulty: " + question.difficulty;
+            div.appendChild(p3);
+            let p4 = document.createElement("p");
+            p4.innerText = "question: " + question.question;
+            div.appendChild(p4);
+            body.appendChild(div);
+            //visualizza le possibili risposte
+            displayChoices(question, index);
+          }
+
+          function displayChoices(question, index) {
+            let body = document.getElementsByTagName("body")[0];
+            let div = document.createElement("div");
+            div.setAttribute("id", "answer_div");
+            if (question.type === "boolean") {
+              let trueChoice = document.createElement("input");
+              trueChoice.setAttribute("type", "radio");
+              trueChoice.setAttribute("id", "true_choice" + index);
+              trueChoice.setAttribute("name", "boolean_choice" + index);
+              trueChoice.setAttribute("value", "True");
+              div.appendChild(trueChoice);
+              let trueLabel = document.createElement("label");
+              trueLabel.setAttribute("for", "true_choice" + index);
+              trueLabel.innerText = "True";
+              div.appendChild(trueLabel);
+              let falseChoice = document.createElement("input");
+              falseChoice.setAttribute("type", "radio");
+              falseChoice.setAttribute("id", "false_choice" + index);
+              falseChoice.setAttribute("name", "boolean_choice" + index);
+              falseChoice.setAttribute("value", "False");
+              div.appendChild(falseChoice);
+              let falseLabel = document.createElement("label");
+              falseLabel.setAttribute("for", "false_choice" + index);
+              falseLabel.innerText = "False";
+              div.appendChild(falseLabel);
+            } else {
+              let choices = [];
+              for(let answer of question.incorrect_answers) {
+                choices.push(answer);
+              }
+              choices.push(question.correct_answer);
+              //mescola le scelte
+              choices = sortChoices(choices);
+              for(let i = 0; i < choices.length; i++) {
+                let input = document.createElement("input");
+                input.setAttribute("type", "radio");
+                input.setAttribute("id", "multiple_choice" + index);
+                input.setAttribute("name", "multiple_choice" + index);
+                input.setAttribute("value", choices[i]);
+                div.appendChild(input);
+                let label = document.createElement("label");
+                label.setAttribute("for", "multiple_choice" + index);
+                label.innerText = choices[i];
+                div.appendChild(label);
+              }
+            }
+            let br = document.createElement("br");
+            div.appendChild(br);
+            let confirmButton = document.createElement("button");
+            confirmButton.setAttribute("id", "confirm_button");
+            confirmButton.innerText = "Confirm";
+            confirmButton.addEventListener("click", confirmAnswer);
+            div.appendChild(confirmButton);
+            body.appendChild(div);
+          }
+
+          function sortChoices(arr) {
+            let times = arr.length;
+            let temp = [];
+            for(let i = 1; i <= times; i++) {
+              let random = Math.ceil(Math.random() * arr.length) - 1;
+              temp.push(arr.splice(random, 1));
+            }
+            return temp;
+          }
+
+          function confirmAnswer() {
+            //codice per verificare la risposta e passare alla domanada successiva
+            let div = document.getElementById("answer_div");
+            let radioButtons = div.getElementsByTagName("input");
+            let selected = false;
+            let target = false;
+            for(let radioBtn of radioButtons) {
+              if (radioBtn.checked) {
+                selected = true;
+                if (radioBtn.value === questionsArr[questionIndex].correct_answer) {
+                  target = true;
+                  if (questionsArr[questionIndex].difficulty = "easy") {
+                    points++;
+                  } else {
+                    points += 2;
+                  }
+                }
+                break;
+              }
+            }
+            if (selected) {
+              if (target) {
+                alert("Risposta corretta");
+              } else {
+                alert("Risposta sbagliata");
+              }
+              questionIndex++;
+              checkQuestionIndex();
+            } else {
+              alert("Devi selezionare una risposta!!!");
+            }
+          }
+
+          function checkQuestionIndex() {
+            clearQuestion();
+            if (questionIndex === questionsArr.length) {
+              //partita finita. Mostra punteggio
+              showPoints();
+            } else {
+              displayQuestion(questionsArr[questionIndex], questionIndex);
+            }
+          }
+
+          function clearQuestion() {
+            let body = document.getElementsByTagName("body")[0];
+            let div1 = document.getElementById("question_div");
+            let div2 = document.getElementById("answer_div");
+            body.removeChild(div1);
+            body.removeChild(div2);
+          }
+
+          function showPoints() {
+            let body = document.getElementsByTagName("body")[0];
+            let p = document.createElement("p");
+            p.setAttribute("id", "final_p");
+            p.innerText = "Punteggio finale: " + points;
+            body.appendChild(p);
+          }
+
+          // ANCORA SUGGERIMENTI :)
+          // Se stai mostrando al giocatore tutte le domande in un colpo solo:
+          // Per ogni domanda, crea un elemento contenitore; poi crea un radio button (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio)
+          // con, come opzioni, sia la risposta corretta che quella/e non corretta/e. (puoi utilizzare google per capire come recuperare il valore di un
+          // radio button per il punteggio finale)
+          //
+          // Se stai mostrando al giocatore le domande una alla volta:
+          // All'inizio mostra la prima domanda con il testo i i radio buttons. Quando il giocatore seleziona una risposta, prendi la domanda
+          // successiva dall'elenco e rimpiazza la domanda vecchia, salvando la risposta selezionata in una variabile.
+        }
+  
+        // Come calcolare il punteggio? Puoi farlo in 2 modi:
+        // Se stai mostrando al giocatore tutte le domande in un colpo solo, seleziona tutti i radio buttons e controlla se la risposta selezionata
+        // è quella corretta.
+        // Se stai mostrando al giocatore le domande una alla volta, basta aggiungere o no 1 punto ogni volta che viene selezionata una risposta.
+      </script>
+</body>
+</html>

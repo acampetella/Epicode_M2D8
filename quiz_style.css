@@ -1,0 +1,10 @@
+#form label {
+    margin-right: 10px;
+}
+
+#play_button, #confirm_button {
+    margin-top: 20px;
+    font-size: 15pt;
+    border: 1px solid black;
+    border-radius: 10px;
+}
